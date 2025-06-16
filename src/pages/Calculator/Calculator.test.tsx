@@ -2,34 +2,37 @@ import { render, screen } from "@testing-library/react";
 import Calculator from "./Calculator";
 import userEvent from "@testing-library/user-event";
 
-test("계산", async () => {
-  const user = userEvent.setup();
-  render(<Calculator />);
+// userEvent - 브라우저 상호작용 유틸
+// screen - tag
+// type - 행위
+// textHaveContent - 초기값에 대한 검증
+// tobe 변경 값에 대한 검증
 
-  //   a ,b Input
-  const inputA = screen.getByTestId("input-a");
-  const inputB = screen.getByTestId("input-b");
-
-  //   CalculBtn
-  const addBtn = screen.getByTestId("btn-add");
-  const minusBtn = screen.getByTestId("btn-minus");
-
+describe("계산기", () => {
   // 초기값 0
-  const result = screen.getByTestId("result");
-  expect(result).toHaveTextContent("0");
+  test("초기값", async () => {
+    render(<Calculator />);
+    const result = screen.getByTestId("result");
+    expect(result).toHaveTextContent("0");
+  });
 
-  await user.clear(inputA);
-  await user.type(inputA, "5");
-  await user.clear(inputB);
-  await user.type(inputB, "3");
-  await user.click(addBtn);
+  //Insert & slice
+  test("값 insert & slice", async () => {
+    render(<Calculator />);
+    const result = screen.getByTestId("result");
+    const numbersToClick = ["9", "9", "1"];
+    const deleteBtn = screen.getByTestId("btn-delete");
 
-  expect(result).toHaveTextContent("8");
-  await user.clear(inputA);
-  await user.type(inputA, "5");
-  await user.clear(inputB);
-  await user.type(inputB, "3");
-  await user.click(minusBtn);
+    const insertNums = numbersToClick.map(async (e) => {
+      const btn = screen.getByRole("button", { name: e + "" });
+      return userEvent.click(btn);
+    });
 
-  expect(result).toHaveTextContent("2");
+    await Promise.all(insertNums);
+    expect(result.textContent).toBe("991");
+
+    //삭제 클릭 시
+    await userEvent.click(deleteBtn);
+    expect(result.textContent).toBe("99");
+  });
 });

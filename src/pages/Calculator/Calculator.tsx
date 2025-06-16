@@ -8,7 +8,9 @@ export default function Calculator() {
     <>
       <div className="border p-2 border-zinc-700 mb-4 text-right">
         <div>{calculatorText}</div>
-        <div className="text-2xl">{curNum}</div>
+        <div className="text-2xl" data-testid="result">
+          {curNum}
+        </div>
       </div>
 
       <div className="grid grid-cols-4 gap-5">
@@ -18,6 +20,7 @@ export default function Calculator() {
               <button
                 className="last-of-type:col-span-3"
                 value={e}
+                key={`num-btn-${e}`}
                 onClick={(e) => {
                   const val =
                     curNum === "0"
@@ -36,7 +39,16 @@ export default function Calculator() {
           <button data-testid="btn-reset" onClick={() => setCurNum("0")}>
             reset
           </button>
-          <button data-testid="btn-minus">c</button>
+          <button
+            data-testid="btn-delete"
+            onClick={() =>
+              setCurNum((prev) => {
+                return prev.slice(0, -1);
+              })
+            }
+          >
+            c
+          </button>
           <button data-testid="btn-add">+</button>
           <button data-testid="btn-minus">-</button>
 
